@@ -13,10 +13,8 @@ import dev.trigam.modules.module.ModuleInfo;
 	environment = ModuleEnvironment.SERVER
 )
 public class ArmorStandArms extends Module {
-
 	@Override
 	public void init () {
 		this.getLogger().info( "Hey! I'm loaded!" );
 	}
-
 }

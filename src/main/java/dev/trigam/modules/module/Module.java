@@ -13,7 +13,7 @@ public abstract class Module {
 		this.moduleInfo = this.getClass().getAnnotation( ModuleInfo.class );
 		assert this.moduleInfo != null;
 		
-		this.logger = LoggerFactory.getLogger( this.getModulePath() );
+		this.logger = LoggerFactory.getLogger( this.getModuleIdentifier().toString() );
 	}
 	
 	public abstract void init();
@@ -22,11 +22,22 @@ public abstract class Module {
 		return moduleInfo;
 	}
 	
-	public String getModulePath () {
-		String path = this.moduleInfo.modId() + "/";
-		if ( !this.moduleInfo.categoryId().isEmpty() ) path += this.moduleInfo.categoryId() + "/";
-		path += this.moduleInfo.moduleId();
+	public String getModulePath ( boolean includeModId ) {
+		return Module.getModulePath( this.moduleInfo, includeModId );
+	}
+	public static String getModulePath ( ModuleInfo moduleInfo, boolean includeModId ) {
+		String path = "";
+		if ( !moduleInfo.categoryId().isEmpty() ) path = moduleInfo.categoryId();
+		if ( includeModId ) path = String.format( "%s:%s", moduleInfo.modId(), path );
+		path = String.format( "%s/%s", path, moduleInfo.moduleId() );
 		return path;
+	}
+	public Identifier getModuleIdentifier () {
+		return Module.getModuleIdentifier( this.moduleInfo );
+	}
+	public static Identifier getModuleIdentifier ( ModuleInfo moduleInfo ) {
+		String modulePath = Module.getModulePath( moduleInfo, false );
+		return Identifier.of( moduleInfo.modId(), modulePath );
 	}
 	
 	public Logger getLogger () {
@@ -34,6 +45,6 @@ public abstract class Module {
 	}
 	
 	public String toString () {
-		return "Module{" + Identifier.of( this.moduleInfo.modId(), this.moduleInfo.moduleId() ) + "}";
+		return String.format( "Module{%s}", this.getModuleIdentifier() );
 	}
 }
