@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+
+	"version": "${version}",
+	"license": "CC0-1.0",
+	"id": "block-by-block",
+	"name": "Block by Block",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"icon": "assets/block-by-block/icon.png",
+
+	"authors": [
+		"Trigam"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.trigam.modules.BlockByBlock"
+		]
+	},
+	"mixins": [
+		"block-by-block.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.8",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

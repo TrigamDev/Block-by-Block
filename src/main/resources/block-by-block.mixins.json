@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"compatibilityLevel": "JAVA_21",
+
+	"package": "dev.trigam.modules.mixin",
+	"mixins": [
+
+	],
+
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
