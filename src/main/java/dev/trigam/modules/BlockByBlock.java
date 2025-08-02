@@ -1,5 +1,6 @@
 package dev.trigam.modules;
 
+import dev.trigam.modules.test.modules.armor_stand_arms.ArmorStandArms;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -12,8 +13,8 @@ public class BlockByBlock implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-	
-	
+		
+		new ArmorStandArms().init();
 	
 	}
 }
