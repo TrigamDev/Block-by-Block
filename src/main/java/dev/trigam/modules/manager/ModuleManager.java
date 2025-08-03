@@ -2,7 +2,6 @@ package dev.trigam.modules.manager;
 
 import dev.trigam.modules.BlockByBlock;
 import dev.trigam.modules.module.Module;
-import dev.trigam.modules.module.ModuleInfo;
 import net.minecraft.util.Identifier;
 
 
@@ -21,7 +20,7 @@ public class ModuleManager {
 	
 	public void loadModules () throws Exception {
 		this.scanPackages();
-		Map< Identifier, ModuleInfo > discoveredModules = this.moduleDiscovery.getDiscoveredModules();
+		Map<Identifier, ModuleDiscovery.DiscoveredModule > discoveredModules = this.moduleDiscovery.getDiscoveredModules();
 		
 		// Status message
 		String moduleList = buildModuleList( discoveredModules.keySet() );
@@ -32,7 +31,7 @@ public class ModuleManager {
 		);
 		
 		// Loop through each discovered module and load it
-		for ( Map.Entry< Identifier, ModuleInfo > discoveredModule : discoveredModules.entrySet() ) {
+		for ( Map.Entry<Identifier, ModuleDiscovery.DiscoveredModule> discoveredModule : discoveredModules.entrySet() ) {
 			loadModule( discoveredModule.getKey(), discoveredModule.getValue() );
 		}
 	}
@@ -43,10 +42,8 @@ public class ModuleManager {
 		this.moduleDiscovery.scan( "dev.trigam.modules.test.modules" );
 	}
 	
-	private void loadModule ( Identifier moduleId, ModuleInfo moduleInfo ) throws Exception {
-		Map< Identifier, Class<? extends Module>> moduleClasses = this.moduleDiscovery.getModuleClasses();
-		
-		Class<? extends Module> moduleClass = moduleClasses.get( moduleId );
+	private void loadModule ( Identifier moduleId, ModuleDiscovery.DiscoveredModule discoveredModule ) throws Exception {
+		Class<? extends Module> moduleClass = discoveredModule.moduleClass();
 		try {
 			// Create instance of module class and initialize
 			Module module = moduleClass.getDeclaredConstructor().newInstance();

@@ -15,8 +15,7 @@ import java.util.Set;
 
 public class ModuleDiscovery {
 
-	private final Map< Identifier, ModuleInfo> discoveredModules = new HashMap<>();
-	private final Map< Identifier, Class<? extends Module>> moduleClasses = new HashMap<>();
+	private final Map< Identifier, DiscoveredModule> discoveredModules = new HashMap<>();
 	
 	public void scan ( String packageName ) throws Exception {
 		try {
@@ -34,27 +33,34 @@ public class ModuleDiscovery {
 			
 			for ( Class<?> moduleClass : annotatedClasses ) {
 				if ( !Module.class.isAssignableFrom( moduleClass ) ) {
-					throw new Exception( String.format( "%s is annotated with @ModuleInfo, but does not extend Module",
+					throw new Exception( String.format(
+						"%s is annotated with @ModuleInfo, but does not extend Module",
 						moduleClass.getName()
 					) );
 				}
 				
-				ModuleInfo annotation = moduleClass.getAnnotation( ModuleInfo.class );
-				discoveredModules.put( Module.getModuleIdentifier( annotation ), annotation );
-				moduleClasses.put( Module.getModuleIdentifier( annotation ), moduleClass.asSubclass( Module.class ) );
+				// Package up info and add it to the list of discovered modules
+				ModuleInfo moduleInfo = moduleClass.getAnnotation( ModuleInfo.class );
+				Identifier moduleId = Module.getModuleIdentifier( moduleInfo );
+				DiscoveredModule discoveredModule = new DiscoveredModule(
+					moduleId,
+					moduleInfo,
+					moduleClass.asSubclass( Module.class )
+				);
+				discoveredModules.put( moduleId, discoveredModule );
 			}
-			
 		} catch ( Exception exception ) {
 			throw new Exception( "Failed to scan for modules", exception );
 		}
 	}
 	
-	public Map< Identifier, ModuleInfo> getDiscoveredModules () {
+	public Map< Identifier, DiscoveredModule> getDiscoveredModules () {
 		return this.discoveredModules;
 	}
 	
-	public Map< Identifier, Class<? extends Module>> getModuleClasses () {
-		return this.moduleClasses;
-	}
-
+	public record DiscoveredModule(
+		Identifier moduleId,
+		ModuleInfo moduleInfo,
+		Class< ? extends Module > moduleClass
+	) {}
 }
