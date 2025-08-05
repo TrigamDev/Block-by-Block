@@ -1,5 +1,6 @@
 package dev.trigam.modules.manager;
 
+import dev.trigam.modules.exception.DiscoveryException;
 import dev.trigam.modules.module.Module;
 import dev.trigam.modules.module.ModuleInfo;
 import net.minecraft.util.Identifier;
@@ -17,7 +18,7 @@ public class ModuleDiscovery {
 
 	private final Map< Identifier, DiscoveredModule> discoveredModules = new HashMap<>();
 	
-	public void scan ( String packageName ) throws Exception {
+	public void scan ( String packageName ) {
 		try {
 			Reflections reflections = new Reflections(
 				new ConfigurationBuilder()
@@ -33,7 +34,7 @@ public class ModuleDiscovery {
 			
 			for ( Class<?> moduleClass : annotatedClasses ) {
 				if ( !Module.class.isAssignableFrom( moduleClass ) ) {
-					throw new Exception( String.format(
+					throw new DiscoveryException( String.format(
 						"%s is annotated with @ModuleInfo, but does not extend Module",
 						moduleClass.getName()
 					) );
@@ -50,7 +51,7 @@ public class ModuleDiscovery {
 				discoveredModules.put( moduleId, discoveredModule );
 			}
 		} catch ( Exception exception ) {
-			throw new Exception( "Failed to scan for modules", exception );
+			throw new DiscoveryException( "Failed to scan for modules", exception );
 		}
 	}
 	

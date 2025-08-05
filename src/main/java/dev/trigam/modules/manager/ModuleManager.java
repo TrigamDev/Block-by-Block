@@ -1,12 +1,13 @@
 package dev.trigam.modules.manager;
 
 import dev.trigam.modules.BlockByBlock;
+import dev.trigam.modules.exception.LoadException;
+import dev.trigam.modules.manager.ModuleDiscovery.DiscoveredModule;
 import dev.trigam.modules.module.Module;
 import net.minecraft.util.Identifier;
 
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ModuleManager {
@@ -18,9 +19,9 @@ public class ModuleManager {
 		this.moduleDiscovery = new ModuleDiscovery();
 	}
 	
-	public void loadModules () throws Exception {
+	public void loadModules () {
 		this.scanPackages();
-		Map<Identifier, ModuleDiscovery.DiscoveredModule > discoveredModules = this.moduleDiscovery.getDiscoveredModules();
+		Map<Identifier, DiscoveredModule > discoveredModules = this.moduleDiscovery.getDiscoveredModules();
 		
 		// Status message
 		String moduleList = buildModuleList( discoveredModules.keySet() );
@@ -31,18 +32,18 @@ public class ModuleManager {
 		);
 		
 		// Loop through each discovered module and load it
-		for ( Map.Entry<Identifier, ModuleDiscovery.DiscoveredModule> discoveredModule : discoveredModules.entrySet() ) {
+		for ( Map.Entry<Identifier, DiscoveredModule> discoveredModule : discoveredModules.entrySet() ) {
 			loadModule( discoveredModule.getKey(), discoveredModule.getValue() );
 		}
 	}
 	
 	// Replace with a method of finding each mod's
 	// modules package and scan each of them
-	private void scanPackages () throws Exception {
+	private void scanPackages () {
 		this.moduleDiscovery.scan( "dev.trigam.modules.test.modules" );
 	}
 	
-	private void loadModule ( Identifier moduleId, ModuleDiscovery.DiscoveredModule discoveredModule ) throws Exception {
+	private void loadModule ( Identifier moduleId, DiscoveredModule discoveredModule ) {
 		Class<? extends Module> moduleClass = discoveredModule.moduleClass();
 		try {
 			// Create instance of module class and initialize
@@ -52,7 +53,7 @@ public class ModuleManager {
 			this.loadedModules.put( moduleId, module );
 			BlockByBlock.MANAGER_LOGGER.info( "Loaded module {}", moduleId );
 		} catch ( Exception exception ) {
-			throw new Exception( String.format(
+			throw new LoadException( String.format(
 				"Failed to load module %s %s", moduleId.toString(), exception
 			) );
 		}

@@ -20,7 +20,6 @@ public class BlockByBlock implements ModInitializer {
 		this.moduleManager = new ModuleManager();
 		
 		// Initialize modules
-		try { this.moduleManager.loadModules(); }
-		catch ( Exception e ) { throw new RuntimeException( e ); }
+		this.moduleManager.loadModules();
 	}
 }
