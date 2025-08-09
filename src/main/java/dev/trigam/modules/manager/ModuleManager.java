@@ -20,8 +20,8 @@ public class ModuleManager {
 	}
 	
 	public void loadModules () {
-		this.scanPackages();
-		Map<Identifier, DiscoveredModule > discoveredModules = this.moduleDiscovery.getDiscoveredModules();
+		this.moduleDiscovery.scanMods();
+		Map<Identifier, DiscoveredModule> discoveredModules = this.moduleDiscovery.getDiscoveredModules();
 		
 		// Status message
 		String moduleList = buildModuleList( discoveredModules.keySet() );
@@ -35,12 +35,6 @@ public class ModuleManager {
 		for ( Map.Entry<Identifier, DiscoveredModule> discoveredModule : discoveredModules.entrySet() ) {
 			loadModule( discoveredModule.getKey(), discoveredModule.getValue() );
 		}
-	}
-	
-	// Replace with a method of finding each mod's
-	// modules package and scan each of them
-	private void scanPackages () {
-		this.moduleDiscovery.scan( "dev.trigam.modules.test.modules" );
 	}
 	
 	private void loadModule ( Identifier moduleId, DiscoveredModule discoveredModule ) {

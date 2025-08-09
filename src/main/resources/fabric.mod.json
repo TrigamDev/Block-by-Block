@@ -12,8 +12,8 @@
 		"Trigam"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://www.trigam.dev",
+		"sources": "https://github.com/TrigamDev/Block-by-Block"
 	},
 
 	"environment": "*",
@@ -25,10 +25,15 @@
 	"mixins": [
 		"block-by-block.mixins.json"
 	],
+
 	"depends": {
 		"fabricloader": ">=0.16.14",
 		"minecraft": "~1.21.8",
 		"java": ">=21",
 		"fabric-api": "*"
+	},
+
+	"custom": {
+		"block-by-block:modules": "dev.trigam.modules.test.modules"
 	}
 }

@@ -18,3 +18,4 @@ public class ArmorStandArms extends Module {
 		this.getLogger().info( "Hey! I'm loaded!" );
 	}
 }
+
