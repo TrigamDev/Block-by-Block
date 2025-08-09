@@ -1,0 +1,37 @@
+{
+    "schemaVersion": 1,
+
+    "version": "${version}",
+    "license": "CC0-1.0",
+    "id": "test-mod",
+    "name": "Block by Block (Test Mod)",
+    "description": "This is an example description! Tell everyone what your mod is about!",
+    "icon": "assets/test_mod/icon.png",
+
+    "authors": [
+        "Trigam"
+    ],
+    "contact": {
+        "homepage": "https://www.trigam.dev",
+        "sources": "https://github.com/TrigamDev/Block-by-Block"
+    },
+
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "dev.trigam.test_mod.TestMod"
+        ]
+    },
+    "mixins": [],
+
+    "depends": {
+        "fabricloader": ">=0.16.14",
+        "minecraft": "~1.21.8",
+        "java": ">=21",
+        "fabric-api": "*"
+    },
+
+    "custom": {
+        "block-by-block:modules": "dev.trigam.test_mod.modules"
+    }
+}

@@ -5,9 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention( RetentionPolicy.RUNTIME )
 public @interface ModuleInfo {
-	String modId();
-	String moduleId();
-	String categoryId() default "";
+	ModuleIdentifier moduleId();
 	
 	ModuleEnvironment environment() default ModuleEnvironment.ANY;
 	boolean enabled = true;

@@ -2,7 +2,7 @@
 	"required": true,
 	"compatibilityLevel": "JAVA_21",
 
-	"package": "dev.trigam.modules.mixin",
+	"package": "dev.trigam.test_mod.mixin",
 	"mixins": [
 
 	],

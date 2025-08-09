@@ -22,22 +22,11 @@ public abstract class Module {
 		return moduleInfo;
 	}
 	
-	public String getModulePath ( boolean includeModId ) {
-		return Module.getModulePath( this.moduleInfo, includeModId );
-	}
-	public static String getModulePath ( ModuleInfo moduleInfo, boolean includeModId ) {
-		String path = "";
-		if ( !moduleInfo.categoryId().isEmpty() ) path = moduleInfo.categoryId();
-		if ( includeModId ) path = String.format( "%s:%s", moduleInfo.modId(), path );
-		path = String.format( "%s/%s", path, moduleInfo.moduleId() );
-		return path;
-	}
 	public Identifier getModuleIdentifier () {
 		return Module.getModuleIdentifier( this.moduleInfo );
 	}
 	public static Identifier getModuleIdentifier ( ModuleInfo moduleInfo ) {
-		String modulePath = Module.getModulePath( moduleInfo, false );
-		return Identifier.of( moduleInfo.modId(), modulePath );
+		return Identifier.of( moduleInfo.moduleId().modId(), moduleInfo.moduleId().modulePath() );
 	}
 	
 	public Logger getLogger () {

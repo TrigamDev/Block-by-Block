@@ -6,14 +6,12 @@ import dev.trigam.modules.manager.ModuleDiscovery.DiscoveredModule;
 import dev.trigam.modules.module.Module;
 import net.minecraft.util.Identifier;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ModuleManager {
 	
 	private final ModuleDiscovery moduleDiscovery;
-	private final Map<Identifier, Module> loadedModules = new HashMap<>();
+	private final ModuleTree loadedModules = new ModuleTree();
 	
 	public ModuleManager () {
 		this.moduleDiscovery = new ModuleDiscovery();
@@ -24,17 +22,23 @@ public class ModuleManager {
 		Map<Identifier, DiscoveredModule> discoveredModules = this.moduleDiscovery.getDiscoveredModules();
 		
 		// Status message
-		String moduleList = buildModuleList( discoveredModules.keySet() );
-		BlockByBlock.MANAGER_LOGGER.info( "Loading {} module{}:\n{}",
+		BlockByBlock.MANAGER_LOGGER.info( "Loading {} module{}...",
 			discoveredModules.size(),
-			discoveredModules.size() != 1 ? "s" : "",
-			moduleList
+			discoveredModules.size() != 1 ? "s" : ""
 		);
 		
 		// Loop through each discovered module and load it
 		for ( Map.Entry<Identifier, DiscoveredModule> discoveredModule : discoveredModules.entrySet() ) {
 			loadModule( discoveredModule.getKey(), discoveredModule.getValue() );
 		}
+		
+		// Status message
+		BlockByBlock.MANAGER_LOGGER.info( "Loaded {} module{}:{}{}",
+			discoveredModules.size(),
+			discoveredModules.size() != 1 ? "s" : "",
+			!discoveredModules.isEmpty() ? "\n" : "",
+			this.loadedModules
+		);
 	}
 	
 	private void loadModule ( Identifier moduleId, DiscoveredModule discoveredModule ) {
@@ -44,8 +48,7 @@ public class ModuleManager {
 			Module module = moduleClass.getDeclaredConstructor().newInstance();
 			module.init();
 			
-			this.loadedModules.put( moduleId, module );
-			BlockByBlock.MANAGER_LOGGER.info( "Loaded module {}", moduleId );
+			addModuleToTree( moduleId, module );
 		} catch ( Exception exception ) {
 			throw new LoadException( String.format(
 				"Failed to load module %s %s", moduleId.toString(), exception
@@ -53,13 +56,31 @@ public class ModuleManager {
 		}
 	}
 	
-	// Create a bulleted list of each module id
-	private String buildModuleList ( Set<Identifier> moduleIds ) {
-		StringBuilder moduleList = new StringBuilder();
-		for ( Identifier moduleId : moduleIds ) {
-			if ( !moduleList.isEmpty() ) moduleList.append( "\n" );
-			moduleList.append( String.format( "\t- %s", moduleId ) );
+	private void addModuleToTree ( Identifier moduleId, Module module ) {
+		// Either grab the existing root node, or make one if it doesn't exist
+		Optional<ModuleTree.Node> modRootSearch = this.loadedModules.getRootByName( moduleId.getNamespace() );
+		ModuleTree.Node modRoot;
+		
+		if ( modRootSearch.isPresent() ) modRoot = modRootSearch.get();
+		else {
+			modRoot = new ModuleTree.Node( moduleId.getNamespace(), Optional.empty() );
+			this.loadedModules.addRoot( modRoot );
 		}
-		return moduleList.toString();
+		
+		// Sequentially add path nodes
+		ModuleTree.Node currentNode = modRoot;
+		for ( String pathPart : moduleId.getPath().split( "/" ) ) {
+			// Either grab the existing path node, or make one if it doesn't exist
+			Optional<ModuleTree.Node> foundNode = currentNode.getChildByName( pathPart );
+			if ( foundNode.isPresent() ) currentNode = foundNode.get();
+			else {
+				ModuleTree.Node pathNode = new ModuleTree.Node( pathPart, Optional.empty() );
+				currentNode.addChild( pathNode );
+				currentNode = pathNode;
+			}
+		}
+		
+		// Add the module data to the last path node
+		currentNode.setValue( Optional.of( module ) );
 	}
 }

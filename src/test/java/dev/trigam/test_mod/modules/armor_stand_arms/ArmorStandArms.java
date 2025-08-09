@@ -1,14 +1,16 @@
-package dev.trigam.modules.test.modules.armor_stand_arms;
+package dev.trigam.test_mod.modules.armor_stand_arms;
 
-import dev.trigam.modules.BlockByBlock;
 import dev.trigam.modules.module.Module;
 import dev.trigam.modules.module.ModuleEnvironment;
+import dev.trigam.modules.module.ModuleIdentifier;
 import dev.trigam.modules.module.ModuleInfo;
+import dev.trigam.test_mod.TestMod;
 
 @ModuleInfo(
-	modId = BlockByBlock.MOD_ID,
-	moduleId = "armor_stand_arms",
-	categoryId = "building",
+	moduleId = @ModuleIdentifier(
+		modId = TestMod.MOD_ID,
+		modulePath = "building/armor_stand/armor_stand_arms"
+	),
 	
 	environment = ModuleEnvironment.SERVER
 )
@@ -18,4 +20,3 @@ public class ArmorStandArms extends Module {
 		this.getLogger().info( "Hey! I'm loaded!" );
 	}
 }
-
