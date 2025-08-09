@@ -11,7 +11,7 @@ import java.util.*;
 public class ModuleManager {
 	
 	private final ModuleDiscovery moduleDiscovery;
-	private final ModuleTree loadedModules = new ModuleTree();
+	private final HashMap<Identifier, Module> loadedModules = new HashMap<>();
 	
 	public ModuleManager () {
 		this.moduleDiscovery = new ModuleDiscovery();
@@ -37,7 +37,7 @@ public class ModuleManager {
 			discoveredModules.size(),
 			discoveredModules.size() != 1 ? "s" : "",
 			!discoveredModules.isEmpty() ? "\n" : "",
-			this.loadedModules
+			this.getModulesAsTree()
 		);
 	}
 	
@@ -48,7 +48,7 @@ public class ModuleManager {
 			Module module = moduleClass.getDeclaredConstructor().newInstance();
 			module.init();
 			
-			addModuleToTree( moduleId, module );
+			this.loadedModules.put( moduleId, module );
 		} catch ( Exception exception ) {
 			throw new LoadException( String.format(
 				"Failed to load module %s %s", moduleId.toString(), exception
@@ -56,15 +56,27 @@ public class ModuleManager {
 		}
 	}
 	
-	private void addModuleToTree ( Identifier moduleId, Module module ) {
+	private ModuleTree getModulesAsTree () {
+		ModuleTree moduleTree = new ModuleTree();
+		
+		for ( Map.Entry<Identifier, Module> moduleEntry : this.loadedModules.entrySet() ) {
+			Identifier moduleId = moduleEntry.getKey();
+			Module module = moduleEntry.getValue();
+			
+			this.addModuleToTree( moduleId, module, moduleTree );
+		}
+		
+		return moduleTree;
+	}
+	private void addModuleToTree ( Identifier moduleId, Module module, ModuleTree moduleTree ) {
 		// Either grab the existing root node, or make one if it doesn't exist
-		Optional<ModuleTree.Node> modRootSearch = this.loadedModules.getRootByName( moduleId.getNamespace() );
+		Optional<ModuleTree.Node> modRootSearch = moduleTree.getRootByName( moduleId.getNamespace() );
 		ModuleTree.Node modRoot;
 		
 		if ( modRootSearch.isPresent() ) modRoot = modRootSearch.get();
 		else {
 			modRoot = new ModuleTree.Node( moduleId.getNamespace(), Optional.empty() );
-			this.loadedModules.addRoot( modRoot );
+			moduleTree.addRoot( modRoot );
 		}
 		
 		// Sequentially add path nodes
