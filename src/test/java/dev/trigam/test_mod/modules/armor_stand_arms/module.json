@@ -1,0 +1,21 @@
+{
+    "schema_version": 1,
+
+    "id": "building/armor_stand/armor_stand_arms",
+    "name": "Toggleable Armor Stand Arms",
+    "description": "Allows Armor Stands to have their arms toggled. Arms can be added with Sticks, and removed with Shears.",
+
+    "version": "0.0.1",
+    "license": "MIT",
+
+    "authors": [
+        "WheatFlour",
+        "Trigam"
+    ],
+
+    "environment": "server",
+    "entrypoint": "ArmorStandArms",
+    "mixins": [
+        "mixins.ToggleableArmorStandArms"
+    ]
+}

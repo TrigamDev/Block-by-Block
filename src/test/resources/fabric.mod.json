@@ -1,12 +1,13 @@
 {
     "schemaVersion": 1,
 
-    "version": "${version}",
-    "license": "CC0-1.0",
     "id": "test-mod",
     "name": "Block by Block (Test Mod)",
     "description": "This is an example description! Tell everyone what your mod is about!",
     "icon": "assets/test_mod/icon.png",
+
+    "version": "${version}",
+    "license": "CC0-1.0",
 
     "authors": [
         "Trigam"

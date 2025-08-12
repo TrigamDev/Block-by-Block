@@ -22,9 +22,7 @@
 			"dev.trigam.modules.BlockByBlock"
 		]
 	},
-	"mixins": [
-		"block-by-block.mixins.json"
-	],
+	"mixins": [],
 
 	"depends": {
 		"fabricloader": ">=0.16.14",
